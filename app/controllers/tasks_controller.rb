@@ -3,8 +3,18 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+  @tasks = Task.all
+
+  case params[:sort]
+  when "priority"
+    @tasks = @tasks.order(priority: :asc)
+  when "due_date"
+    @tasks = @tasks.order(due_date: :asc)
+  when "completed"
+    @tasks = @tasks.order(completed: :asc)
   end
+end
+
 
   # GET /tasks/1 or /tasks/1.json
   def show
