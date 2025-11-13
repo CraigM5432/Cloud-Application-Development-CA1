@@ -18,5 +18,5 @@ root "dashboard#index"
 
 
   # Defines the root path route ("/")
-  # root "posts#index"
+   root "posts#index"
 end
