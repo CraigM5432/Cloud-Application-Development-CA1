@@ -3,7 +3,7 @@
   "private": "true",
   "scripts": {
     "build:css:compile": "sass ./app/assets/stylesheets/application.bootstrap.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules",
-    "build:css:prefix": "postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",
+    "build:css:prefix": "bunx postcss ./app/assets/builds/application.css --use=autoprefixer --output=./app/assets/builds/application.css",
     "build:css": "bun run build:css:compile && bun run build:css:prefix"
   },
   "browserslist": [
