@@ -1,0 +1,55 @@
+name: Deploy to AWS EC2
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Environment Variables
+        env:
+          #These are github secrets
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+        run: |
+          # Save the SSH private key and set the permissions
+          echo "$SSH_PRIVATE_KEY" > keypair.pem
+          chmod 600 keypair.pem
+
+      - name: Deploy to EC2
+        run: |
+          # Define EC2 instance details
+          ELASTIC_IP=98.88.219.210
+
+          # SSH into the EC2 instance
+          ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${ELASTIC_IP} << 'EOF'
+            # Exit if error occurs
+            set -e
+            #
+            # Pull repository state to vm
+            sudo rm -fr Craig5432
+            git clone https://github.com/CraigM5432/.github/workflows/deploy.yml.git
+            cd myCadBackend
+            #
+            # Install dependencies, migrate the database, and start the application
+            export PATH=/home/ubuntu/.local/share/mise/installs/ruby/3.4.7/bin:${PATH}
+            bundle install
+            bundle binstubs bundler-audit brakeman rubocop --force
+            bundle exec bundle audit --update
+            bundle exec brakeman --no-pager
+            bundle exec rubocop --auto-correct-all --disable-uncorrectable
+            rails db:migrate
+            ./startServer.sh
+          EOF
+
+      - name: Clean up
+        run: |
+          # Remove the private key after use
+          rm -f keypair.pem
