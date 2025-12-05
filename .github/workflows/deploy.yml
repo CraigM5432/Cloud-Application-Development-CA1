@@ -34,8 +34,8 @@ jobs:
             set -e
             #
             # Pull repository state to vm
-            sudo rm -fr Craig5432
-            git clone https://github.com/CraigM5432/.github/workflows/deploy.yml.git
+            sudo rm -fr CraigM5432
+            git clone https://github.com/CraigM5432/.github/workflows/deploy.yml
             cd myCadBackend
             #
             # Install dependencies, migrate the database, and start the application
