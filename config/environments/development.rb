@@ -59,6 +59,7 @@ Rails.application.configure do
   config.action_dispatch.verbose_redirect_logs = true
 
   # Suppress logger output for asset requests.
+  config.assets.debug = false
   config.assets.quiet = true
 
   # Raises error for missing translations.

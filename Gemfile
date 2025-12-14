@@ -19,11 +19,9 @@ gem "jbuilder"
 
 #gem 'bootstrap', '~> 5.3.0'
 
+gem "cssbundling-rails"
+
 gem 'jquery-rails' 
-
-#gem 'sassc-rails'
-
-gem 'cssbundling-rails'
 
 gem 'chartkick'
 
