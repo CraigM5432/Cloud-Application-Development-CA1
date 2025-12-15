@@ -1,5 +1,6 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
-  get "dashboard/index"
   resources :tasks
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -10,7 +11,7 @@ Rails.application.routes.draw do
 get "dashboard", to: "dashboard#index"
 
 root "dashboard#index"
-
+mount Sidekiq::Web => "/sidekiq"
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
@@ -19,4 +20,10 @@ root "dashboard#index"
 
   # Defines the root path route ("/")
   #root "posts#index"
+
+  namespace :api do
+  namespace :v1 do
+    resources :tasks, only: [:index, :show, :create, :update, :destroy]
+  end
+ end
 end

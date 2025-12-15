@@ -1,22 +1,21 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
 
-  # GET /tasks or /tasks.json
+  # GET /tasks
   def index
-  @tasks = Task.all
+    @tasks = Task.all
 
-  case params[:sort]
-  when "priority"
-    @tasks = @tasks.order(priority: :asc)
-  when "due_date"
-    @tasks = @tasks.order(due_date: :asc)
-  when "completed"
-    @tasks = @tasks.order(completed: :asc)
+    case params[:sort]
+    when "priority"
+      @tasks = @tasks.order(priority: :asc)
+    when "due_date"
+      @tasks = @tasks.order(due_date: :asc)
+    when "completed"
+      @tasks = @tasks.order(completed: :asc)
+    end
   end
-end
 
-
-  # GET /tasks/1 or /tasks/1.json
+  # GET /tasks/1
   def show
   end
 
@@ -29,12 +28,14 @@ end
   def edit
   end
 
-  # POST /tasks or /tasks.json
+  # POST /tasks
   def create
     @task = Task.new(task_params)
 
     respond_to do |format|
       if @task.save
+        schedule_reminder(@task)   
+
         format.html { redirect_to @task, notice: "Task was successfully created." }
         format.json { render :show, status: :created, location: @task }
       else
@@ -44,10 +45,12 @@ end
     end
   end
 
-  # PATCH/PUT /tasks/1 or /tasks/1.json
+  # PATCH/PUT /tasks/1
   def update
     respond_to do |format|
       if @task.update(task_params)
+        schedule_reminder(@task)   
+
         format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @task }
       else
@@ -57,7 +60,7 @@ end
     end
   end
 
-  # DELETE /tasks/1 or /tasks/1.json
+  # DELETE /tasks/1
   def destroy
     @task.destroy!
 
@@ -68,13 +71,38 @@ end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_task
       @task = Task.find(params.expect(:id))
     end
 
-    # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :priority, :due_date, :completed ])
+      params.expect(task: [
+        :title,
+        :description,
+        :priority,
+        :due_date,
+        :completed,
+        :reminder_offset
+      ])
     end
+
+    def schedule_reminder(task)
+  	return if params[:task][:reminder_offset].blank?
+  	return if task.completed?
+
+  	minutes = params[:task][:reminder_offset].to_i
+  	reminder_time = task.due_date - minutes.minutes
+
+  	# Canceling existing reminder if present
+  	if task.reminder_job_id.present?
+    	Sidekiq::ScheduledSet.new.find_job(task.reminder_job_id)&.delete
+  	end
+
+  	job = TaskReminderJob.set(wait_until: reminder_time).perform_later(task.id)
+
+  	task.update_columns(reminder_at: reminder_time,reminder_job_id: job.provider_job_id)
+	end
+
 end
+

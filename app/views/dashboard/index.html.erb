@@ -1,44 +1,47 @@
-<h1 class="mb-4"> Dashboard</h1>
+<div data-controller="dashboard-charts">
 
-<h1 class="mb-4">Tasks</h1>
+  <h1 class="mb-4">Dashboard</h1>
+  <h2 class="mb-4">Tasks</h2>
 
-<div class="row mb-4">
-  <div class="col-md-3">
-    <div class="card text-center p-3 shadow-sm">
-      <h5>Total Tasks</h5>
-      <h2><%= @total_tasks %></h2>
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-center p-3 shadow-sm">
+        <h5>Total Tasks</h5>
+        <h2><%= @total_tasks %></h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card text-center p-3 shadow-sm">
+        <h5>Completed</h5>
+        <h2 class="text-success"><%= @completed_tasks %></h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card text-center p-3 shadow-sm">
+        <h5>Pending</h5>
+        <h2 class="text-warning"><%= @pending_tasks %></h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card text-center p-3 shadow-sm">
+        <h5>Completion Rate</h5>
+        <h2 class="text-primary"><%= @completion_rate %>%</h2>
+      </div>
     </div>
   </div>
 
-  <div class="col-md-3">
-    <div class="card text-center p-3 shadow-sm">
-      <h5>Completed</h5>
-      <h2 class="text-success"><%= @completed_tasks %></h2>
-    </div>
+  <div class="card p-4 mb-4 shadow-sm">
+    <h4 class="mb-3">Tasks Created Over Time</h4>
+    <canvas data-dashboard-charts-target="overTime"></canvas>
   </div>
 
-  <div class="col-md-3">
-    <div class="card text-center p-3 shadow-sm">
-      <h5>Pending</h5>
-      <h2 class="text-warning"><%= @pending_tasks %></h2>
-    </div>
+  <div class="card p-4 shadow-sm">
+    <h4 class="mb-3">Tasks by Priority</h4>
+    <canvas data-dashboard-charts-target="byPriority"></canvas>
   </div>
 
-  <div class="col-md-3">
-    <div class="card text-center p-3 shadow-sm">
-      <h5>Completion Rate</h5>
-      <h2 class="text-primary"><%= @completion_rate %>%</h2>
-    </div>
-  </div>
-</div>
-
-<div class="card p-4 mb-4 shadow-sm">
-  <h4 class="mb-3">Tasks Created Over Time</h4>
-  <%= line_chart @tasks_by_day, height: "300px", colors: ["#0d6efd"] %>
-</div>
-
-<div class="card p-4 shadow-sm">
-  <h4 class="mb-3">Tasks by Priority</h4>
-  <%= pie_chart @tasks_by_priority, colors: ["#ffc107", "#0dcaf0", "#dc3545"] %>
 </div>
 
