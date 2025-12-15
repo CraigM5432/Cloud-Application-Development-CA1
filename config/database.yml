@@ -18,3 +18,7 @@ production:
 production_cable:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
+
+production_queue:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
