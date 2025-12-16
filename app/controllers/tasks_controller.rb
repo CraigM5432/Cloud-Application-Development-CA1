@@ -73,18 +73,17 @@ class TasksController < ApplicationController
   private
 
     def set_task
-      @task = Task.find(params.expect(:id))
+      @task = Task.find(params.require(:id))
     end
 
     def task_params
-      params.expect(task: [
-        :title,
-        :description,
-        :priority,
-        :due_date,
-        :completed,
-        :reminder_offset
-      ])
+    	params.require(:task).permit(
+    	:title,
+    	:description,
+    	:priority,
+    	:due_date,
+    	:completed,
+    	:reminder_offset)
     end
 
     def schedule_reminder(task)
@@ -105,4 +104,3 @@ class TasksController < ApplicationController
 	end
 
 end
-
