@@ -15,11 +15,3 @@ production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
 
-production_cable:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
-
-production_cache:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
-
