@@ -1,5 +1,4 @@
 require_relative "boot"
-
 require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
@@ -25,20 +24,5 @@ module MultiTasking
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     
-    config.active_record.database_selector = { delay: 2.seconds }
-
-	config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
-	config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
-
-	config.active_record.connects_to = {
-  	database: {
-    	writing: :production,
-    	reading: :production
-  	},
-  	cable: :production_cable,
-  	queue: :production_queue,
-  	cache: :production_cache
-	}
-
   end
 end
