@@ -23,6 +23,6 @@ module MultiTasking
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    
+   config.solid_queue.enabled = false    
   end
 end
